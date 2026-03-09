@@ -1,11 +1,10 @@
-import { useState } from 'react'
 import { GooeyToaster } from 'goey-toast'
+import './App.css'
+import { FileDropZone } from './components/FileDropZone'
 import { Header } from './components/Header'
 import { TodoInput } from './components/TodoInput'
 import { TodoList } from './components/TodoList'
-import { FileDropZone } from './components/FileDropZone'
 import { useTodos } from './hooks/useTodos'
-import './App.css'
 
 /**
  * アプリケーションのルートコンポーネント
@@ -13,13 +12,12 @@ import './App.css'
  */
 const App = () => {
   const todoState = useTodos()
-  const [isToastExpanded, setIsToastExpanded] = useState(false)
+  // const [isToastExpanded, setIsToastExpanded] = useState(false)
 
   return (
     <div className="app">
       <div
         className="toast-area"
-        onClick={() => setIsToastExpanded(prev => !prev)}
       >
         <GooeyToaster
           position="top-right"
@@ -27,8 +25,7 @@ const App = () => {
           showProgress
           maxQueue={10}
           queueOverflow="drop-oldest"
-          duration={3000}
-          expand={isToastExpanded}
+          duration={6000}
           visibleToasts={10}
         />
       </div>
