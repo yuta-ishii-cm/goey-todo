@@ -1,11 +1,12 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import 'goey-toast/styles.css'  // ← 必須: これがないとトーストが unstyled
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.tsx";
+import "goey-toast/styles.css"; // ← 必須: これがないとトーストが unstyled
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+// biome-ignore lint/style/noNonNullAssertion: React entry point
+createRoot(document.getElementById("root")!).render(
+	<StrictMode>
+		<App />
+	</StrictMode>,
+);
