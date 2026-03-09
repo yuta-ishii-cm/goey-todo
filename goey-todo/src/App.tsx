@@ -1,34 +1,54 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { GooeyToaster } from 'goey-toast'
+import { Header } from './components/Header'
+import { TodoInput } from './components/TodoInput'
+import { TodoList } from './components/TodoList'
+import { FileDropZone } from './components/FileDropZone'
+import { useTodos } from './hooks/useTodos'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+/**
+ * アプリケーションのルートコンポーネント
+ * @returns App要素
+ */
+const App = () => {
+  const todoState = useTodos()
+  const [isToastExpanded, setIsToastExpanded] = useState(false)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <div
+        className="toast-area"
+        onClick={() => setIsToastExpanded(prev => !prev)}
+      >
+        <GooeyToaster
+          position="top-right"
+          preset="bouncy"
+          showProgress
+          maxQueue={10}
+          queueOverflow="drop-oldest"
+          duration={3000}
+          expand={isToastExpanded}
+          visibleToasts={10}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <FileDropZone onFileDrop={todoState.importFile} />
+      <div className="container">
+        <Header
+          completedCount={todoState.completedCount}
+          onImport={todoState.importFile}
+          onExport={todoState.exportJSON}
+        />
+        <TodoInput onAdd={todoState.addTodo} />
+        <TodoList
+          active={todoState.activeTodos}
+          done={todoState.doneTodos}
+          onComplete={todoState.completeTodo}
+          onUndo={todoState.undoComplete}
+          onDelete={todoState.deleteTodo}
+        />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
