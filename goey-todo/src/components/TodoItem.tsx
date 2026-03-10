@@ -1,5 +1,7 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
-import { Check, RotateCcw, X } from "lucide-react";
+import { Check, GripVertical, RotateCcw, X } from "lucide-react";
 
 /** Todoアイテムの型定義 */
 interface Todo {
@@ -34,8 +36,24 @@ export const TodoItem = ({
 	onUndo,
 	onDelete,
 }: TodoItemProps) => {
+	const { attributes, listeners, setNodeRef, transform, isDragging } =
+		useSortable({ id: todo.id });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition: undefined,
+		opacity: isDragging ? 0.5 : 1,
+	};
+
 	return (
-		<div className={`todo-item ${todo.done ? "done" : ""}`}>
+		<div
+			ref={setNodeRef}
+			style={style}
+			className={`todo-item ${todo.done ? "done" : ""}`}
+		>
+			<div className="drag-handle" {...attributes} {...listeners}>
+				<GripVertical className="w-4 h-4" />
+			</div>
 			<span className="todo-text">{todo.text}</span>
 			<div className="todo-actions">
 				{todo.done ? (

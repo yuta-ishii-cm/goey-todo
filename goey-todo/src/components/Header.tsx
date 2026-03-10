@@ -6,6 +6,8 @@ import { useRef } from "react";
 interface HeaderProps {
 	/** 完了したタスクの数 */
 	completedCount: number;
+	/** 全タスクの数 */
+	totalCount: number;
 	/** ファイルインポート時のコールバック */
 	onImport: (file: File) => void;
 	/** エクスポートボタン押下時のコールバック */
@@ -18,8 +20,14 @@ interface HeaderProps {
  * @param props - Headerのプロパティ
  * @returns Header要素
  */
-export const Header = ({ completedCount, onImport, onExport }: HeaderProps) => {
+export const Header = ({
+	completedCount,
+	totalCount,
+	onImport,
+	onExport,
+}: HeaderProps) => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
 	/**
 	 * インポートボタンクリック時にファイル入力をトリガー
@@ -42,29 +50,44 @@ export const Header = ({ completedCount, onImport, onExport }: HeaderProps) => {
 
 	return (
 		<header className="header">
-			<div className="header-title">
-				<h1>goey-todo</h1>
-				{completedCount > 0 && (
-					<span className="completed-badge">{completedCount} 完了</span>
-				)}
+			<div className="header-top">
+				<div className="header-title">
+					<h1>goey-todo</h1>
+					{completedCount > 0 && (
+						<span className="completed-badge">{completedCount} 完了</span>
+					)}
+				</div>
+				<div className="header-actions">
+					<input
+						ref={fileInputRef}
+						type="file"
+						accept=".csv,.json"
+						onChange={handleFileChange}
+						className="hidden"
+					/>
+					<Button variant="outline" size="sm" onClick={handleImportClick}>
+						<Upload className="w-4 h-4 mr-2" />
+						インポート
+					</Button>
+					<Button variant="outline" size="sm" onClick={onExport}>
+						<Download className="w-4 h-4 mr-2" />
+						エクスポート
+					</Button>
+				</div>
 			</div>
-			<div className="header-actions">
-				<input
-					ref={fileInputRef}
-					type="file"
-					accept=".csv,.json"
-					onChange={handleFileChange}
-					className="hidden"
-				/>
-				<Button variant="outline" size="sm" onClick={handleImportClick}>
-					<Upload className="w-4 h-4 mr-2" />
-					インポート
-				</Button>
-				<Button variant="outline" size="sm" onClick={onExport}>
-					<Download className="w-4 h-4 mr-2" />
-					エクスポート
-				</Button>
-			</div>
+			{totalCount > 0 && (
+				<div className="progress-container">
+					<div className="progress-bar">
+						<div
+							className="progress-fill"
+							style={{ width: `${progressPercent}%` }}
+						/>
+					</div>
+					<span className="progress-text">
+						{completedCount} / {totalCount} タスク完了
+					</span>
+				</div>
+			)}
 		</header>
 	);
 };
